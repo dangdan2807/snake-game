@@ -3,7 +3,6 @@
 #include <Windows.h>
 #include <Shlwapi.h>
 #include <conio.h>
-#include <stdlib.h>
 
 void resizeConsole(SHORT width, SHORT height);
 void clrscr(void);
