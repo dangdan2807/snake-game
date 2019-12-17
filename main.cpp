@@ -10,9 +10,9 @@ void ve_tuong_duoi();
 void ve_tuong_trai();
 void ve_tuong_phai();
 void ve_tuong();
-void ve_ran();
 void khoi_tao_ran();
 void xoa_du_lieu_cu(int toadox[], int toadoy[]);
+void ve_ran();
 void xu_li_ran(int toadox, int toadoy, int x, int y);
 void them(int toado, int vt);
 void xoa(int toado, int vt);
@@ -23,30 +23,55 @@ int main() {
   khoi_tao_ran(toadox, toadoy);
   ve_ran(toadox, toadoy);
   int x= 50, y = 13;
+  int check = 2;
   while(true)
   {
   	//xóa vị trí cũ (backspace)
   	xoa_du_lieu_cu(toadox, toadoy);
-  	int check = 2;
   	//0: di chuyển xuống
   	//1: di chuyển lên
   	//2: di chuyển sang phải
   	//3: di chuyển sang trái
+  	// điều khiển
+  	if(_kbhit())
+  	{
+  		char kitu = _getch();
+  		if(kitu == -32){
+  			kitu == _getch();
+  			if(kitu == 72 && check != 0)//đi lên
+  			{
+  				check = 1;
+  			}
+  			else if (kitu == 80 && check != 1)// đi xuống
+  			{
+  				check = 0;
+  			}
+  			else if (kitu == 75 && check != 2)// qua trái
+  			{
+  				check = 3;
+  			}
+  			else if (kitu == 77 && check != 3)// qua phải
+  			{
+  				check = 2;
+  			}
+  		}
+  	}
+  	// xử lí di chuyển
   	if(check == 0)
   	{
-  		
-  	}
+  		y++; // đi xuống
+  	} 
   	else if(check == 1)
   	{
-  	
+  		y--; // đi lên
   	}
   	else if(check == 2)
   	{
-  	
+  		x++; // qua phải
   	}
   	else if(check == 3)
   	{
-  	
+  		x--; // qua trái
   	}
   	xu_li_ran(toadox, toadoy, x, y);
   	sleep(150);
