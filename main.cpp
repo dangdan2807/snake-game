@@ -1,7 +1,6 @@
 #include <iostream>
 #include "console.h"
 #include <stdlib.h>
-#include <windows.h>
 using namespace std;
 
 #define MAX 100;
@@ -21,9 +20,14 @@ void xoa(int toado[], int vt);
 bool kt_ran_cham_tuong(int x0, int y0);
 bool kt_ran_cham_duoi(int toadox[], int toadoy[]);
 bool kt_ran(int toadox[], int toadoy[]);
+void tao_qua(int &xqua, int &yqua);
 
 // ============== Hàm Main ===============
 int main() {
+  srand(time(NULL));
+  int xqua = 0, yqua = 0;
+  // tọa quả
+  void tao_qua(xqua, yqua);
   bool gameover = false;
   int toadox[MAX], toadoy[MAX];
   ve_tuong();
@@ -235,4 +239,14 @@ bool kt_ran(int toadox[], int toadoy[])
       return true; // gameover
     }
     return false;
+}
+
+void tao_qua(int &xqua, int &yqua)
+{
+  // 11<= xqua <= 99
+  xqua = rand()%(99 - 11 + 1 ) + 11;
+  // 2<= yqua <= 25
+  yqua = rand()%( 25 - 2 + 1 ) + 2;
+  gotoXY(xqua, yqua);
+  cout <<"*";
 }
