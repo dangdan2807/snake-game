@@ -6,33 +6,39 @@ using namespace std;
 #define MAX 100;
 int sl = 4;
 //================= Khai báo các hàm ==================
+// phần vẽ tường
 void ve_tuong_tren();
 void ve_tuong_duoi();
 void ve_tuong_trai();
 void ve_tuong_phai();
 void ve_tuong();
+//phần về rắn
 void khoi_tao_ran(int toadox[], int toadoy[]);
 void xoa_du_lieu_cu(int toadox[], int toadoy[]);
 void ve_ran(int toadox[], int toadoy[]);
-void xu_li_ran(int toadox[], int toadoy[], int x, int y);
+void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua);
 void them(int toado[], int vt);
 void xoa(int toado[], int vt);
 bool kt_ran_cham_tuong(int x0, int y0);
 bool kt_ran_cham_duoi(int toadox[], int toadoy[]);
 bool kt_ran(int toadox[], int toadoy[]);
-void tao_qua(int &xqua, int &yqua);
+// phần tạo quả
+void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[]);
+bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[]);
+bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua);
 
 // ============== Hàm Main ===============
 int main() {
-  srand(time(NULL));
-  int xqua = 0, yqua = 0;
-  // tọa quả
-  void tao_qua(xqua, yqua);
   bool gameover = false;
   int toadox[MAX], toadoy[MAX];
   ve_tuong();
   khoi_tao_ran(toadox, toadoy);
   ve_ran(toadox, toadoy);
+  // ============ kiểm tra và tạo quả ==============
+  srand(time(NULL));
+  int xqua = 0, yqua = 0;
+  // tạo quả
+  tao_qua(xqua, yqua, toadox, toadoy);
   int x= 50, y = 13;
   int check = 2;
   while(gameover == false)
@@ -85,71 +91,15 @@ int main() {
   		x--; // qua trái
   	}
     // xử lí rắn;
-  	xu_li_ran(toadox, toadoy, x, y);
+  	xu_li_ran(toadox, toadoy, x, y, xqua, yqua);
     // kiểm tra
     gameover = kt_ran(toadox, toadoy);
-  	sleep(150);
+  	sleep(200);
   }
   _getch();
 }
 
 //============== Định nghĩa các hàm ===================
-void xu_li_ran(int toadox[], int toadoy[], int x, int y)
-{
-	//b1: thêm tọa độ mới vào đầu mảng
-	them(toadox, x);
-	them(toadoy, y);
-	//b2: xóa tọa độ cuối mảng
-	xoa(toadox, sl - 1);
-	xoa(toadoy, sl - 1);
-	//b3: vẽ lại rắn mới
-	ve_ran(toadox, toadoy);
-}
-void them(int toado[], int vt)
-{
-	for(int i = sl; i > 0; i--){
-		toado[i] = toado[i - 1];
-	}
-	toado[0] = vt;
-	sl++;
-}
-void xoa(int toado[], int vt)
-{
-	for(int i = vt; i < sl; i++){
-		toado[i] = toado[i + 1];
-	}
-	sl--;
-}
-void khoi_tao_ran(int toadox[], int toadoy[])
-{
-  int x=50, y=13;
-  for(int i=0; i<sl; i++){
-    toadox[i] = x;
-    toadoy[i] = y;
-    x--;
-  }
-}
-void ve_ran(int toadox[], int toadoy[])
-{
-  for(int i= 0; i< sl; i++){
-    gotoXY(toadox[i], toadoy[i]);
-    if(i == 0){
-      cout <<"O";
-    }
-    else{
-      cout <<"o";
-    }
-  }
-}
-void xoa_du_lieu_cu(int toadox[], int toadoy[])
-{
-	for(int i = 0; i < sl; i++)
-	{
-		gotoXY(toadox[i], toadoy[i]);
-		cout <<" ";
-	}
-}
-
 void ve_tuong_tren()
 {
   int x = 10, y = 1;
@@ -188,10 +138,72 @@ void ve_tuong_phai()
 }
 void ve_tuong()
 {
+  setColor(11);
   ve_tuong_tren();
   ve_tuong_duoi();
   ve_tuong_trai();
   ve_tuong_phai();
+  setColor(7);
+}
+
+void khoi_tao_ran(int toadox[], int toadoy[])
+{
+  int x=50, y=13;
+  for(int i=0; i<sl; i++){
+    toadox[i] = x;
+    toadoy[i] = y;
+    x--;
+  }
+}
+void xoa_du_lieu_cu(int toadox[], int toadoy[])
+{
+	for(int i = 0; i < sl; i++)
+	{
+		gotoXY(toadox[i], toadoy[i]);
+		cout <<" ";
+	}
+}
+void ve_ran(int toadox[], int toadoy[])
+{
+  for(int i= 0; i< sl; i++){
+    gotoXY(toadox[i], toadoy[i]);
+    if(i == 0){
+      cout <<"O";
+    }
+    else{
+      cout <<"o";
+    }
+  }
+}
+void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua)
+{
+	//b1: thêm tọa độ mới vào đầu mảng
+	them(toadox, x);
+	them(toadoy, y);
+  if(kt_ran_an_qua(xqua, yqua, toadox[0], toadoy[0]) == false )
+  {
+    //b2: xóa tọa độ cuối mảng
+	  xoa(toadox, sl - 1);
+	  xoa(toadoy, sl - 1);
+  }
+	//b3: vẽ lại rắn mới
+	ve_ran(toadox, toadoy);
+  tao_qua(xqua, yqua, toadox, toadoy);
+}
+void them(int toado[], int vt)
+{
+	for(int i = sl; i > 0; i--){
+		toado[i] = toado[i - 1];
+	}
+	toado[0] = vt;
+	sl++;
+}
+void xoa(int toado[], int vt)
+{
+	for(int i = vt; i < sl; i++){
+		toado[i] = toado[i + 1];
+	}
+	sl--;
 }
 
 bool kt_ran_cham_tuong(int x0, int y0)
@@ -241,12 +253,36 @@ bool kt_ran(int toadox[], int toadoy[])
     return false;
 }
 
-void tao_qua(int &xqua, int &yqua)
+void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[])
 {
-  // 11<= xqua <= 99
-  xqua = rand()%(99 - 11 + 1 ) + 11;
-  // 2<= yqua <= 25
-  yqua = rand()%( 25 - 2 + 1 ) + 2;
+  do
+  {
+    // 11<= xqua <= 99
+    xqua = rand()%(99 - 11 + 1 ) + 11;
+    // 2<= yqua <= 25
+    yqua = rand()%( 25 - 2 + 1 ) + 2;
+  }while(kt_ran_de_qua(xqua, yqua, toadox, toadoy) == true);
+  int i = rand()%( 15 - 1 + 1) + 1;
+  setColor(i);
   gotoXY(xqua, yqua);
   cout <<"*";
+  setColor(7);
+}
+bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[])
+{
+  for(int i = 0; i< sl; i++)
+  {
+    if((xqua == toadox[i]) && (yqua == toadoy[i]))
+    {
+      return true; // rắn đè lên qua
+    }
+  }
+}
+bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua)
+{
+  if((x0 == xqua) && (y0 == yqua))
+  {
+    return true; //rắn ăn quả
+  }
+  return false;
 }
