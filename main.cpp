@@ -1,18 +1,21 @@
 #include <iostream>
+#include <stdlib.h> 
+#include <unistd.h> // thư viện dùng hàm sleep()
+#include <ctime>
+#include <Windows.h>
 #include "console.h"
-#include <stdlib.h>
+
+
 using namespace std;
 
-#define MAX 100;
+#define MAX 100
 int sl = 4;
 //================= Khai báo các hàm ==================
-// phần vẽ tường
 void ve_tuong_tren();
 void ve_tuong_duoi();
 void ve_tuong_trai();
 void ve_tuong_phai();
 void ve_tuong();
-//phần về rắn
 void khoi_tao_ran(int toadox[], int toadoy[]);
 void xoa_du_lieu_cu(int toadox[], int toadoy[]);
 void ve_ran(int toadox[], int toadoy[]);
@@ -22,11 +25,9 @@ void xoa(int toado[], int vt);
 bool kt_ran_cham_tuong(int x0, int y0);
 bool kt_ran_cham_duoi(int toadox[], int toadoy[]);
 bool kt_ran(int toadox[], int toadoy[]);
-// phần tạo quả
 void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[]);
 bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[]);
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua);
-
 // ============== Hàm Main ===============
 int main() {
   bool gameover = false;
@@ -34,32 +35,32 @@ int main() {
   ve_tuong();
   khoi_tao_ran(toadox, toadoy);
   ve_ran(toadox, toadoy);
-  // ============ kiểm tra và tạo quả ==============
+  // ============ ki?m tra và t?o qu? ==============
   srand(time(NULL));
   int xqua = 0, yqua = 0;
-  // tạo quả
+  // t?o qu?
   tao_qua(xqua, yqua, toadox, toadoy);
   int x= 50, y = 13;
   int check = 2;
   while(gameover == false)
   {
-  	//xóa vị trí cũ (backspace)
+  	//xóa v? trí cu (backspace)
   	xoa_du_lieu_cu(toadox, toadoy);
-  	//0: di chuyển xuống
-  	//1: di chuyển lên
-  	//2: di chuyển sang phải
-  	//3: di chuyển sang trái
-  	// điều khiển
+  	//0: di chuy?n xu?ng
+  	//1: di chuy?n lên
+  	//2: di chuy?n sang ph?i
+  	//3: di chuy?n sang trái
+  	// di?u khi?n
   	if(_kbhit())
   	{
   		char kitu = _getch();
   		if(kitu == -32){
   			kitu == _getch();
-  			if(kitu == 72 && check != 0)//đi lên
+  			if(kitu == 72 && check != 0)//di lên
   			{
   				check = 1;
   			}
-  			else if (kitu == 80 && check != 1)// đi xuống
+  			else if (kitu == 80 && check != 1)// di xu?ng
   			{
   				check = 0;
   			}
@@ -67,42 +68,42 @@ int main() {
   			{
   				check = 3;
   			}
-  			else if (kitu == 77 && check != 3)// qua phải
+  			else if (kitu == 77 && check != 3)// qua ph?i
   			{
   				check = 2;
   			}
   		}
   	}
-  	// xử lí di chuyển
+  	// x? lí di chuy?n
   	if(check == 0)
   	{
-  		y++; // đi xuống
+  		y++; // di xu?ng
   	} 
   	else if(check == 1)
   	{
-  		y--; // đi lên
+  		y--; // di lên
   	}
   	else if(check == 2)
   	{
-  		x++; // qua phải
+  		x++; // qua ph?i
   	}
   	else if(check == 3)
   	{
   		x--; // qua trái
   	}
-    // xử lí rắn;
+    // x? lí r?n;
   	xu_li_ran(toadox, toadoy, x, y, xqua, yqua);
-    // kiểm tra
+    // ki?m tra
     gameover = kt_ran(toadox, toadoy);
   	sleep(200);
   }
   _getch();
 }
 
-//============== Định nghĩa các hàm ===================
+//============== Ð?nh nghia các hàm ===================
 void ve_tuong_tren()
 {
-  int x = 10, y = 1;
+  short x = 10, y = 1;
   gotoXY(x, y);
   while(x<=100){
     cout <<"+";
@@ -111,7 +112,7 @@ void ve_tuong_tren()
 }
 void ve_tuong_duoi()
 {
-  int x = 10, y = 26;
+  short x = 10, y = 26;
   gotoXY(x, y);
   while(x<=100){
     cout <<"+";
@@ -120,7 +121,7 @@ void ve_tuong_duoi()
 }
 void ve_tuong_trai()
 {
-  int x = 10, y=1;
+  short x = 10, y=1;
   gotoXY(x, y);
   while(y<=26){
     cout <<"+";
@@ -129,7 +130,7 @@ void ve_tuong_trai()
 }
 void ve_tuong_phai()
 {
-  int x = 100, y=1;
+  short x = 100, y=1;
   gotoXY(x, y);
   while(y<=26){
     cout <<"+";
@@ -177,16 +178,16 @@ void ve_ran(int toadox[], int toadoy[])
 }
 void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua)
 {
-	//b1: thêm tọa độ mới vào đầu mảng
+	//b1: thêm t?a d? m?i vào d?u m?ng
 	them(toadox, x);
 	them(toadoy, y);
   if(kt_ran_an_qua(xqua, yqua, toadox[0], toadoy[0]) == false )
   {
-    //b2: xóa tọa độ cuối mảng
+    //b2: xóa t?a d? cu?i m?ng
 	  xoa(toadox, sl - 1);
 	  xoa(toadoy, sl - 1);
   }
-	//b3: vẽ lại rắn mới
+	//b3: v? l?i r?n m?i
 	ve_ran(toadox, toadoy);
   tao_qua(xqua, yqua, toadox, toadoy);
 }
@@ -208,22 +209,22 @@ void xoa(int toado[], int vt)
 
 bool kt_ran_cham_tuong(int x0, int y0)
 {
-  // rắn chạm tường trên
+  // r?n ch?m tu?ng trên
   if(y0 == 1 && (x0 >= 10 && x0 <= 100))
   {
     return true;//gameover
   }
-  // rắn chạm tường dưới
+  // r?n ch?m tu?ng du?i
   else if(y0 == 26 && (x0 >= 10 && x0 <= 100))
   {
     return true;//gameover
   }
-  // rắn chạm tường trái
+  // r?n ch?m tu?ng trái
   else if(x0 == 10 && (y0 >= 1 && y0 <= 26))
   {
     return true;//gameover
   }
-  // rắn chạm tường phải
+  // r?n ch?m tu?ng ph?i
   else if(x0 == 100 && (y0 >= 1 && y0 <= 26))
   {
     return true;//gameover
@@ -243,7 +244,7 @@ bool kt_ran_cham_duoi(int toadox[], int toadoy[])
 }
 bool kt_ran(int toadox[], int toadoy[])
 {
-  // kiểm tra
+  // ki?m tra
     bool kt1 = kt_ran_cham_duoi(toadox, toadoy);
     bool kt2 = kt_ran_cham_tuong(toadox[0], toadoy[0]); 
     if(kt1 == true || kt2 == true)
@@ -274,7 +275,7 @@ bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[])
   {
     if((xqua == toadox[i]) && (yqua == toadoy[i]))
     {
-      return true; // rắn đè lên qua
+      return true; // r?n dè lên qua
     }
   }
 }
@@ -282,7 +283,7 @@ bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua)
 {
   if((x0 == xqua) && (y0 == yqua))
   {
-    return true; //rắn ăn quả
+    return true; //r?n an qu?
   }
   return false;
 }
