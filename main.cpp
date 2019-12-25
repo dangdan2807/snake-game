@@ -3,12 +3,11 @@
 #include <ctime>
 #include <Windows.h>
 #include "console.h"
-
 using namespace std;
 
 #define MAX 100
 int sl = 4;
-//================= Khai báo các hàm ==================
+//================= Khai bao cac ham ==================
 void ve_tuong_tren();
 void ve_tuong_duoi();
 void ve_tuong_trai();
@@ -26,80 +25,63 @@ bool kt_ran(int toadox[], int toadoy[]);
 void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[]);
 bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[]);
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua);
-// ============== Hàm Main ===============
+// ============== Ham Main ===============
 int main() {
 	bool gameover = false;
 	int toadox[MAX], toadoy[MAX];
 	ve_tuong();
 	khoi_tao_ran(toadox, toadoy);
 	ve_ran(toadox, toadoy);
-	// ============ kiểm tra và t?o qu? ==============
+	// ============ kiem tra và tao qua ==============
 	srand(time(NULL));
 	int xqua = 0, yqua = 0;
-	// t?o qu?
+	// tao qua
 	tao_qua(xqua, yqua, toadox, toadoy);
-	int x = 50, y = 13;
+	int x = 50, y = 13; // dinh hinh vi tri khoi tao ran
 	int check = 2;
 	while (gameover == false)
 	{
-		//xóa v? trí cu (backspace)
+		//xoa vi tri cu (backspace)
 		xoa_du_lieu_cu(toadox, toadoy);
-		//0: di chuy?n xu?ng
-		//1: di chuy?n lên
-		//2: di chuy?n sang ph?i
-		//3: di chuy?n sang trái
-		// di?u khi?n
+		//0: di chuyen xuong
+		//1: di chuyen len
+		//2: di chuyen sang phai
+		//3: di chuyen sang trai
+		// dieu khien
 		if (_kbhit())
 		{
 			char kitu = _getch();
 			if (kitu == -32) {
 				kitu = _getch();
-				if (kitu == 72 && check != 0)//di lên
-				{
+				if (kitu == 72 && check != 0)//di len
 					check = 1;
-				}
-				else if (kitu == 80 && check != 1)// di xu?ng
-				{
+				else if (kitu == 80 && check != 1)// di xuong
 					check = 0;
-				}
-				else if (kitu == 75 && check != 2)// qua trái
-				{
+				else if (kitu == 75 && check != 2)// qua trai
 					check = 3;
-				}
-				else if (kitu == 77 && check != 3)// qua ph?i
-				{
+				else if (kitu == 77 && check != 3)// qua phai
 					check = 2;
-				}
 			}
 		}
-		// x? lí di chuy?n
+		// xu li di chuyen
 		if (check == 0)
-		{
-			y++; // di xu?ng
-		}
+			y++; // di xuong
 		else if (check == 1)
-		{
-			y--; // di lên
-		}
+			y--; // di len
 		else if (check == 2)
-		{
-			x++; // qua ph?i
-		}
+			x++; // qua phai
 		else if (check == 3)
-		{
-			x--; // qua trái
-		}
-		// x? lí r?n;
+			x--; // qua trai
+		// xu li ran;
 		xu_li_ran(toadox, toadoy, x, y, xqua, yqua);
-		// ki?m tra
+		// kiem tra
 		gameover = kt_ran(toadox, toadoy);
 		Sleep(200);
 	}
-	//system ("pause");
 	_getch();
 }
 
-//============== Ð?nh nghia các hàm ===================
+//============== Dinh nghia cac ham ===================
 void ve_tuong_tren()
 {
 	short x = 10, y = 1;
@@ -121,8 +103,8 @@ void ve_tuong_duoi()
 void ve_tuong_trai()
 {
 	short x = 10, y = 1;
-	gotoXY(x, y);
 	while (y <= 26) {
+		gotoXY(x, y);
 		cout << "+";
 		y++;
 	}
@@ -130,8 +112,8 @@ void ve_tuong_trai()
 void ve_tuong_phai()
 {
 	short x = 100, y = 1;
-	gotoXY(x, y);
 	while (y <= 26) {
+		gotoXY(x, y);
 		cout << "+";
 		y++;
 	}
@@ -177,16 +159,16 @@ void ve_ran(int toadox[], int toadoy[])
 }
 void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua)
 {
-	//b1: thêm t?a d? m?i vào d?u m?ng
+	//b1: them toa do moi vao dau mang
 	them(toadox, x);
 	them(toadoy, y);
+	 //b2: xoa toa do cuoi mang
 	if (kt_ran_an_qua(xqua, yqua, toadox[0], toadoy[0]) == false)
 	{
-		//b2: xóa t?a d? cu?i m?ng
 		xoa(toadox, sl - 1);
 		xoa(toadoy, sl - 1);
 	}
-	//b3: v? l?i r?n m?i
+	//b3: ve lai ran moi
 	ve_ran(toadox, toadoy);
 	tao_qua(xqua, yqua, toadox, toadoy);
 }
@@ -208,26 +190,19 @@ void xoa(int toado[], int vt)
 
 bool kt_ran_cham_tuong(int x0, int y0)
 {
-	// r?n ch?m tu?ng trên
+	// ran cham tuong tren
 	if (y0 == 1 && (x0 >= 10 && x0 <= 100))
-	{
 		return true;//gameover
-	}
-	// r?n ch?m tu?ng du?i
+	// ran cham tuong duoi
 	else if (y0 == 26 && (x0 >= 10 && x0 <= 100))
-	{
 		return true;//gameover
-	}
-	// r?n ch?m tu?ng trái
+	// ran cham tuong trai
 	else if (x0 == 10 && (y0 >= 1 && y0 <= 26))
-	{
 		return true;//gameover
-	}
-	// r?n ch?m tu?ng ph?i
+	// ran cham tuong phai
 	else if (x0 == 100 && (y0 >= 1 && y0 <= 26))
-	{
 		return true;//gameover
-	}
+		
 	return false;
 }
 bool kt_ran_cham_duoi(int toadox[], int toadoy[])
@@ -235,21 +210,18 @@ bool kt_ran_cham_duoi(int toadox[], int toadoy[])
 	for (int i = 0; i < sl; i++)
 	{
 		if ((toadox[0] == toadox[i]) && (toadoy[0] == toadoy[i]))
-		{
 			return true; //gameover
-		}
 	}
 	return false;
 }
 bool kt_ran(int toadox[], int toadoy[])
 {
-	// ki?m tra
+	// kiem tra
 	bool kt1 = kt_ran_cham_duoi(toadox, toadoy);
 	bool kt2 = kt_ran_cham_tuong(toadox[0], toadoy[0]);
 	if (kt1 == true || kt2 == true)
-	{
 		return true; // gameover
-	}
+		
 	return false;
 }
 
@@ -273,16 +245,13 @@ bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[])
 	for (int i = 0; i< sl; i++)
 	{
 		if ((xqua == toadox[i]) && (yqua == toadoy[i]))
-		{
-			return true; // r?n dè lên qua
-		}
+			return true; // ran de len qua
 	}
 }
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua)
 {
 	if ((x0 == xqua) && (y0 == yqua))
-	{
-		return true; //r?n an qu?
-	}
+		return true; //ran an qua
+
 	return false;
 }
