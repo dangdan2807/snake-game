@@ -12,11 +12,11 @@ int sl = 4;
 #define Ytuong_max 30
 #define Ytuong_min 1
 
-void vetuong_tren();
-void vetuong_duoi();
-void vetuong_trai();
-void vetuong_phai();
-void vetuong();
+void vetuong_tren(int xmax, int ymax, int xmin, int ymin);
+void vetuong_duoi(int xmax, int ymax, int xmin, int ymin);
+void vetuong_trai(int xmax, int ymax, int xmin, int ymin);
+void vetuong_phai(int xmax, int ymax, int xmin, int ymin);
+void vetuong(int xmax, int ymax, int xmin, int ymin);
 void khoi_tao_ran(int toadox[], int toadoy[]);
 void xoa_dulieu_cu(int toadox[], int toadoy[]);
 void ve_ran(int toadox[], int toadoy[]);
@@ -29,97 +29,22 @@ bool kiemtra_ran(int toadox[], int toadoy[]);
 void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[]);
 bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[]);
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua);
-
-
+void start_game();
+void box_huong_dan();
+void menu();
 
 int main()
 {
-    srand(time(NULL));
-    bool gameover = false;
-    int toadox[MAX], toadoy[MAX];
-    vetuong();
-    khoi_tao_ran(toadox, toadoy);
-    ve_ran(toadox, toadoy);
-    //điểm khởi tạo rắn đầu tiên
-    int x = 50, y = 13;
-    int check = 2;
-    // KIỂM TRA VÀ TẠO QUẢ
-    int xqua = 53, yqua = 6;
-    tao_qua(xqua, yqua, toadox, toadoy);
-    while (gameover == false)
-    {
-        //XÓA DỮ LIỆU CŨ (ĐUÔI RẮN)
-        xoa_dulieu_cu(toadox, toadoy);
-        //0: đi xuống
-        //1: đi lên
-        //2: đi qua phải
-        //3: đi qua trái
-        if (_kbhit())
-        {
-            char kitu = _getch();
-            if (kitu == -32)
-            {
-                kitu = _getch();
-                // đi lên
-                if (kitu == 72 && check != 0)
-                {
-                    check = 1;
-                }
-                // đi xuống
-                else if(kitu == 80 && check != 1)
-                {
-                    check = 0;
-                }
-                // đi sang phải
-                else if (kitu == 77 && check != 3)
-                {
-                    check = 2;
-                }
-                // đi sang trái
-                else if (kitu == 75 && check != 2)
-                {
-                    check = 3;
-                }
-            }
-        }
-        //XỬ LÍ DI CHUYỂN
-        if (check == 0)
-        {
-            //0: đi xuống
-            y++;
-        }
-        else if (check == 1)
-        {
-            //1: đi lên
-            y--;
-        }
-        else if (check == 2)
-        {
-            //2: đi qua phải
-            x++;
-        }
-        else if (check == 3)
-        {
-            //3: đi qua trái
-            x--;
-        }
-        xuli_ran(toadox, toadoy, x, y, xqua, yqua);
-        // KIỂM TRA GAME OVER
-        gameover = kiemtra_ran(toadox, toadoy);
-        Sleep(150);
-    }
-    system("cls");
-    gotoXY(48, 13);
-    setColor(11);
-    cout << "GAME OVER\n";
+    vetuong(Xtuong_max, Ytuong_max, Xtuong_min, Ytuong_min);
+    box_huong_dan();
     _getch();
     return 0;
 }
 
-void vetuong_tren()
+void vetuong_tren(int xmax, int ymax, int xmin, int ymin)
 {
-    int x = Xtuong_min, y = Ytuong_min;
-    while (x <= Xtuong_max)
+    int x = xmin, y = ymin;
+    while (x <= xmax)
     {
         gotoXY(x, y);
         cout << "+";
@@ -127,10 +52,10 @@ void vetuong_tren()
     }
 }
 
-void vetuong_duoi()
+void vetuong_duoi(int xmax, int ymax, int xmin, int ymin)
 {
-    int x = 10, y = Ytuong_max;
-    while (x <= Xtuong_max)
+    int x = xmin, y = ymax;
+    while (x <= xmax)
     {
         gotoXY(x, y);
         cout << "+";
@@ -138,10 +63,10 @@ void vetuong_duoi()
     }
 }
 
-void vetuong_trai()
+void vetuong_trai(int xmax, int ymax, int xmin, int ymin)
 {
-    int x = Xtuong_min, y = Ytuong_min;
-    while (y <= Ytuong_max)
+    int x = xmin, y = ymin;
+    while (y <= ymax)
     {
         gotoXY(x, y);
         cout << "+";
@@ -149,10 +74,10 @@ void vetuong_trai()
     }
 }
 
-void vetuong_phai()
+void vetuong_phai(int xmax, int ymax, int xmin, int ymin)
 {
-    int x = Xtuong_max, y = Ytuong_min;
-    while (y <= Ytuong_max)
+    int x = xmax, y = ymin;
+    while (y <= ymax)
     {
         gotoXY(x, y);
         cout << "+";
@@ -160,13 +85,13 @@ void vetuong_phai()
     }
 }
 
-void vetuong()
+void vetuong(int xmax, int ymax, int xmin, int ymin)
 {
     setColor(10);
-    vetuong_tren();
-    vetuong_duoi();
-    vetuong_phai();
-    vetuong_trai();
+    vetuong_tren(xmax, ymax, xmin, ymin);
+    vetuong_duoi(xmax, ymax, xmin, ymin);
+    vetuong_phai(xmax, ymax, xmin, ymin);
+    vetuong_trai(xmax, ymax, xmin, ymin);
     setColor(7);
 }
 
@@ -333,4 +258,119 @@ bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua)
         return true;
     }
     return false;
+}
+
+void start_game()
+{
+    srand(time(NULL));
+    bool gameover = false;
+    int toadox[MAX], toadoy[MAX];
+    vetuong(Xtuong_max, Ytuong_max, Xtuong_min, Ytuong_min);
+    khoi_tao_ran(toadox, toadoy);
+    ve_ran(toadox, toadoy);
+    //điểm khởi tạo rắn đầu tiên
+    int x = 50, y = 13;
+    int check = 2;
+    // KIỂM TRA VÀ TẠO QUẢ
+    int xqua = 53, yqua = 6;
+    tao_qua(xqua, yqua, toadox, toadoy);
+    while (gameover == false)
+    {
+        //XÓA DỮ LIỆU CŨ (ĐUÔI RẮN)
+        xoa_dulieu_cu(toadox, toadoy);
+        //0: đi xuống
+        //1: đi lên
+        //2: đi qua phải
+        //3: đi qua trái
+        if (_kbhit())
+        {
+            char kitu = _getch();
+            if (kitu == -32)
+            {
+                kitu = _getch();
+                // đi lên
+                if (kitu == 72 && check != 0)
+                {
+                    check = 1;
+                }
+                // đi xuống
+                else if (kitu == 80 && check != 1)
+                {
+                    check = 0;
+                }
+                // đi sang phải
+                else if (kitu == 77 && check != 3)
+                {
+                    check = 2;
+                }
+                // đi sang trái
+                else if (kitu == 75 && check != 2)
+                {
+                    check = 3;
+                }
+            }
+        }
+        //XỬ LÍ DI CHUYỂN
+        if (check == 0)
+        {
+            //0: đi xuống
+            y++;
+        }
+        else if (check == 1)
+        {
+            //1: đi lên
+            y--;
+        }
+        else if (check == 2)
+        {
+            //2: đi qua phải
+            x++;
+        }
+        else if (check == 3)
+        {
+            //3: đi qua trái
+            x--;
+        }
+        xuli_ran(toadox, toadoy, x, y, xqua, yqua);
+        // KIỂM TRA GAME OVER
+        gameover = kiemtra_ran(toadox, toadoy);
+        Sleep(150);
+    }
+    system("cls");
+    gotoXY(48, 13);
+    setColor(11);
+    cout << "GAME OVER\n";
+}
+
+void box_huong_dan(int set_x)
+{
+    vetuong(80, 10, 30, 2);
+    gotoXY(set_x, 3);
+    setColor(11);
+    cout << "Huong Dan:";
+    gotoXY(set_x, 4);
+    setColor(7);
+    cout << "Dieu Khien: W  S  A  D";
+    gotoXY(set_x, 6);
+    setColor(11);
+    cout << "Luat choi:";
+    setColor(7);
+    gotoXY(set_x, 7);
+    cout << "-- Di chuyen ran an cac phan thuong";
+    gotoXY(set_x, 8);
+    cout << "-- Ran can duoi => game over";
+    gotoXY(set_x, 9);
+    cout << "-- CO DIEN: ran khong duoc cham tuong";
+}
+
+void menu()
+{
+    int set_x = 33;
+    box_huong_dan(set_x);
+    gotoXY(set_x - 3, 14);
+    setColor(12);
+    cout << "GAME RAN SAN MOI:";
+    gotoXY(set_x - 3, 16);
+    setColor(11);
+    cout << "BAT DAU - (CO DIEN)";
 }
