@@ -1,257 +1,336 @@
 #include <iostream>
-#include <stdlib.h> 
-#include <ctime>
 #include <Windows.h>
+#include <stdio.h>
+#include <cstdlib>
 #include "console.h"
+#include <time.h>
 using namespace std;
-
-#define MAX 100
 int sl = 4;
-//================= Khai bao cac ham ==================
-void ve_tuong_tren();
-void ve_tuong_duoi();
-void ve_tuong_trai();
-void ve_tuong_phai();
-void ve_tuong();
+#define MAX 100
+#define Xtuong_max 100
+#define Xtuong_min 10
+#define Ytuong_max 30
+#define Ytuong_min 1
+
+void vetuong_tren();
+void vetuong_duoi();
+void vetuong_trai();
+void vetuong_phai();
+void vetuong();
 void khoi_tao_ran(int toadox[], int toadoy[]);
-void xoa_du_lieu_cu(int toadox[], int toadoy[]);
+void xoa_dulieu_cu(int toadox[], int toadoy[]);
 void ve_ran(int toadox[], int toadoy[]);
-void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua);
-void them(int toado[], int vt);
-void xoa(int toado[], int vt);
-bool kt_ran_cham_tuong(int x0, int y0);
-bool kt_ran_cham_duoi(int toadox[], int toadoy[]);
-bool kt_ran(int toadox[], int toadoy[]);
+void xuli_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua);
+void them(int a[], int x);
+void xoa(int a[], int vitri);
+bool ran_chamtuong(int x0, int y0);
+bool ran_chamduoi(int toadox[], int toadoy[]);
+bool kiemtra_ran(int toadox[], int toadoy[]);
 void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[]);
 bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[]);
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua);
-// ============== Ham Main ===============
-int main() {
-	bool gameover = false;
-	int toadox[MAX], toadoy[MAX];
-	ve_tuong();
-	khoi_tao_ran(toadox, toadoy);
-	ve_ran(toadox, toadoy);
-	// ============ kiem tra và tao qua ==============
-	srand(time(NULL));
-	int xqua = 0, yqua = 0;
-	// tao qua
-	tao_qua(xqua, yqua, toadox, toadoy);
-	int x = 50, y = 13; // dinh hinh vi tri khoi tao ran
-	int check = 2;
-	while (gameover == false)
-	{
-		//xoa vi tri cu (backspace)
-		xoa_du_lieu_cu(toadox, toadoy);
-		//0: di chuyen xuong
-		//1: di chuyen len
-		//2: di chuyen sang phai
-		//3: di chuyen sang trai
-		// dieu khien
-		if (_kbhit())
-		{
-			char kitu = _getch();
-			if (kitu == -32) {
-				kitu = _getch();
-				if (kitu == 72 && check != 0)//di len
-					check = 1;
-				else if (kitu == 80 && check != 1)// di xuong
-					check = 0;
-				else if (kitu == 75 && check != 2)// qua trai
-					check = 3;
-				else if (kitu == 77 && check != 3)// qua phai
-					check = 2;
-			}
-		}
-		// xu li di chuyen
-		if (check == 0)
-			y++; // di xuong
-		else if (check == 1)
-			y--; // di len
-		else if (check == 2)
-			x++; // qua phai
-		else if (check == 3)
-			x--; // qua trai
-		// xu li ran;
-		xu_li_ran(toadox, toadoy, x, y, xqua, yqua);
-		// kiem tra
-		gameover = kt_ran(toadox, toadoy);
-		Sleep(200);
-	}
-	_getch();
+
+
+
+int main()
+{
+    srand(time(NULL));
+    bool gameover = false;
+    int toadox[MAX], toadoy[MAX];
+    vetuong();
+    khoi_tao_ran(toadox, toadoy);
+    ve_ran(toadox, toadoy);
+    //điểm khởi tạo rắn đầu tiên
+    int x = 50, y = 13;
+    int check = 2;
+    // KIỂM TRA VÀ TẠO QUẢ
+    int xqua = 53, yqua = 6;
+    tao_qua(xqua, yqua, toadox, toadoy);
+    while (gameover == false)
+    {
+        //XÓA DỮ LIỆU CŨ (ĐUÔI RẮN)
+        xoa_dulieu_cu(toadox, toadoy);
+        //0: đi xuống
+        //1: đi lên
+        //2: đi qua phải
+        //3: đi qua trái
+        if (_kbhit())
+        {
+            char kitu = _getch();
+            if (kitu == -32)
+            {
+                kitu = _getch();
+                // đi lên
+                if (kitu == 72 && check != 0)
+                {
+                    check = 1;
+                }
+                // đi xuống
+                else if(kitu == 80 && check != 1)
+                {
+                    check = 0;
+                }
+                // đi sang phải
+                else if (kitu == 77 && check != 3)
+                {
+                    check = 2;
+                }
+                // đi sang trái
+                else if (kitu == 75 && check != 2)
+                {
+                    check = 3;
+                }
+            }
+        }
+        //XỬ LÍ DI CHUYỂN
+        if (check == 0)
+        {
+            //0: đi xuống
+            y++;
+        }
+        else if (check == 1)
+        {
+            //1: đi lên
+            y--;
+        }
+        else if (check == 2)
+        {
+            //2: đi qua phải
+            x++;
+        }
+        else if (check == 3)
+        {
+            //3: đi qua trái
+            x--;
+        }
+        xuli_ran(toadox, toadoy, x, y, xqua, yqua);
+        // KIỂM TRA GAME OVER
+        gameover = kiemtra_ran(toadox, toadoy);
+        Sleep(150);
+    }
+    system("cls");
+    gotoXY(48, 13);
+    setColor(11);
+    cout << "GAME OVER\n";
+    _getch();
+    return 0;
 }
 
-//============== Dinh nghia cac ham ===================
-void ve_tuong_tren()
+void vetuong_tren()
 {
-	short x = 10, y = 1;
-	gotoXY(x, y);
-	while (x <= 100) {
-		cout << "+";
-		x++;
-	}
+    int x = Xtuong_min, y = Ytuong_min;
+    while (x <= Xtuong_max)
+    {
+        gotoXY(x, y);
+        cout << "+";
+        x++;
+    }
 }
-void ve_tuong_duoi()
+
+void vetuong_duoi()
 {
-	short x = 10, y = 26;
-	gotoXY(x, y);
-	while (x <= 100) {
-		cout << "+";
-		x++;
-	}
+    int x = 10, y = Ytuong_max;
+    while (x <= Xtuong_max)
+    {
+        gotoXY(x, y);
+        cout << "+";
+        x++;
+    }
 }
-void ve_tuong_trai()
+
+void vetuong_trai()
 {
-	short x = 10, y = 1;
-	while (y <= 26) {
-		gotoXY(x, y);
-		cout << "+";
-		y++;
-	}
+    int x = Xtuong_min, y = Ytuong_min;
+    while (y <= Ytuong_max)
+    {
+        gotoXY(x, y);
+        cout << "+";
+        y++;
+    }
 }
-void ve_tuong_phai()
+
+void vetuong_phai()
 {
-	short x = 100, y = 1;
-	while (y <= 26) {
-		gotoXY(x, y);
-		cout << "+";
-		y++;
-	}
+    int x = Xtuong_max, y = Ytuong_min;
+    while (y <= Ytuong_max)
+    {
+        gotoXY(x, y);
+        cout << "+";
+        y++;
+    }
 }
-void ve_tuong()
+
+void vetuong()
 {
-	setColor(11);
-	ve_tuong_tren();
-	ve_tuong_duoi();
-	ve_tuong_trai();
-	ve_tuong_phai();
-	setColor(7);
+    setColor(10);
+    vetuong_tren();
+    vetuong_duoi();
+    vetuong_phai();
+    vetuong_trai();
+    setColor(7);
 }
 
 void khoi_tao_ran(int toadox[], int toadoy[])
 {
-	int x = 50, y = 13;
-	for (int i = 0; i<sl; i++) {
-		toadox[i] = x;
-		toadoy[i] = y;
-		x--;
-	}
-}
-void xoa_du_lieu_cu(int toadox[], int toadoy[])
-{
-	for (int i = 0; i < sl; i++)
-	{
-		gotoXY(toadox[i], toadoy[i]);
-		cout << " ";
-	}
-}
-void ve_ran(int toadox[], int toadoy[])
-{
-	for (int i = 0; i< sl; i++) {
-		gotoXY(toadox[i], toadoy[i]);
-		if (i == 0) {
-			cout << "O";
-		}
-		else {
-			cout << "o";
-		}
-	}
-}
-void xu_li_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua)
-{
-	//b1: them toa do moi vao dau mang
-	them(toadox, x);
-	them(toadoy, y);
-	 //b2: xoa toa do cuoi mang
-	if (kt_ran_an_qua(xqua, yqua, toadox[0], toadoy[0]) == false)
-	{
-		xoa(toadox, sl - 1);
-		xoa(toadoy, sl - 1);
-	}
-	//b3: ve lai ran moi
-	ve_ran(toadox, toadoy);
-	tao_qua(xqua, yqua, toadox, toadoy);
-}
-void them(int toado[], int vt)
-{
-	for (int i = sl; i > 0; i--) {
-		toado[i] = toado[i - 1];
-	}
-	toado[0] = vt;
-	sl++;
-}
-void xoa(int toado[], int vt)
-{
-	for (int i = vt; i < sl; i++) {
-		toado[i] = toado[i + 1];
-	}
-	sl--;
+    int x = 50, y = 13;
+    for (int i = 0; i < sl; i++)
+    {
+        toadox[i] = x;
+        toadoy[i] = y;
+        x--;
+    }
 }
 
-bool kt_ran_cham_tuong(int x0, int y0)
+void ve_ran(int toadox[], int toadoy[])
 {
-	// ran cham tuong tren
-	if (y0 == 1 && (x0 >= 10 && x0 <= 100))
-		return true;//gameover
-	// ran cham tuong duoi
-	else if (y0 == 26 && (x0 >= 10 && x0 <= 100))
-		return true;//gameover
-	// ran cham tuong trai
-	else if (x0 == 10 && (y0 >= 1 && y0 <= 26))
-		return true;//gameover
-	// ran cham tuong phai
-	else if (x0 == 100 && (y0 >= 1 && y0 <= 26))
-		return true;//gameover
-		
-	return false;
+    for (int i = 0; i < sl; i++)
+    {
+        gotoXY(toadox[i], toadoy[i]);
+        if (i == 0)
+        {
+            cout << 0;
+        }
+        else
+        {
+            cout << "o";
+        }
+    }
 }
-bool kt_ran_cham_duoi(int toadox[], int toadoy[])
+
+void xoa_dulieu_cu(int toadox[], int toadoy[])
 {
-	for (int i = 0; i < sl; i++)
-	{
-		if ((toadox[0] == toadox[i]) && (toadoy[0] == toadoy[i]))
-			return true; //gameover
-	}
-	return false;
+    for (int i = 0; i < sl; i++)
+    {
+        gotoXY(toadox[i], toadoy[i]);
+        cout << " ";
+    }
 }
-bool kt_ran(int toadox[], int toadoy[])
+
+void xuli_ran(int toadox[], int toadoy[], int x, int y, int &xqua, int &yqua)
 {
-	// kiem tra
-	bool kt1 = kt_ran_cham_duoi(toadox, toadoy);
-	bool kt2 = kt_ran_cham_tuong(toadox[0], toadoy[0]);
-	if (kt1 == true || kt2 == true)
-		return true; // gameover
-		
-	return false;
+    //thêm tọa độ mới vào đầu mảng (đầu rắn)
+    them(toadox, x);
+    them(toadoy, y);
+    if (kt_ran_an_qua(toadox[0], toadoy[0], xqua, yqua) == false)
+    {
+        //xóa tọa độ cuối mảng (đuôi rắn)
+        xoa(toadox, sl - 1);
+        xoa(toadoy, sl - 1);
+    }
+    else
+    {
+        // tạo quả lại mới sau khi rắn đã ăn quả cũ
+        tao_qua(xqua, yqua, toadox, toadoy);
+    }
+    //vẽ lại rắn (cập nhật lại rắn)
+    ve_ran(toadox, toadoy);
+}
+
+void them(int a[], int x)
+{
+    for (int i = sl; i > 0; i--)
+    {
+        a[i] = a[i - 1];
+    }
+    a[0] = x;
+    sl++;
+}
+
+void xoa(int a[], int vitri)
+{
+    for (int i = vitri; i < sl; i++)
+    {
+        a[i] = a[i + 1];
+    }
+    sl--;
+}
+
+bool ran_chamtuong(int x0, int y0)
+{
+    // rắn chạm tường trên
+    if (y0 == 1 && (x0 >= 10 && x0 <= 100))
+    {
+        return true; //game over
+    }
+    // rắn chạm tường dưới
+    else if (y0 == 26 && (x0 >= 10 && x0 <= 100))
+    {
+        return true; //game over
+    }
+    // rắn chạm tường trái
+    else if (x0 == 10 && (y0 >= 1 && y0 <= 26))
+    {
+        return true; //game over
+    }
+    // rắn chạm tường phải
+    else if (x0 == 100 && (y0 >= 1 && y0 <= 26))
+    {
+        return true; //game over
+    }
+    return false;
+}
+
+bool ran_chamduoi(int toadox[], int toadoy[])
+{
+    for (int i = 1; i < sl; i++)
+    {
+        if (toadox[0] == toadox[i] && toadoy[0] == toadoy[i])
+        {
+            return true; // game over
+        }
+    }
+    return false;
+}
+
+bool kiemtra_ran(int toadox[], int toadoy[])
+{
+    bool kiemtra1 = ran_chamduoi(toadox, toadoy);
+    bool kiemtra2 = ran_chamtuong(toadox[0], toadoy[0]);
+    if (kiemtra1 == true || kiemtra2 == true)
+    {
+        //game over
+        return true;
+    }
+    return false;
 }
 
 void tao_qua(int &xqua, int &yqua, int toadox[], int toadoy[])
 {
-	do
-	{
-		// 11<= xqua <= 99
-		xqua = rand() % (99 - 11 + 1) + 11;
-		// 2<= yqua <= 25
-		yqua = rand() % (25 - 2 + 1) + 2;
-	} while (kt_ran_de_qua(xqua, yqua, toadox, toadoy) == true);
-	int i = rand() % (15 - 1 + 1) + 1;
-	setColor(i);
-	gotoXY(xqua, yqua);
-	cout << "*";
-	setColor(7);
+    do
+    {
+        //11 <= xqua <= 99
+        xqua = rand() % (99 - 11 + 1) + 11;
+        //2<= yqua <= 25
+        yqua = rand() % (25 - 2 + 1) + 2;
+    } while (kt_ran_de_qua(xqua, yqua, toadox, toadoy) == true);
+    gotoXY(xqua, yqua);
+    int i = rand() % (15 - 1 + 1) + 1;
+    //màu ngẫu nhiên cho quả
+    setColor(i);
+    cout << "#";
+    // trả lại màu trắng
+    setColor(7);
 }
+
 bool kt_ran_de_qua(int xqua, int yqua, int toadox[], int toadoy[])
 {
-	for (int i = 0; i< sl; i++)
-	{
-		if ((xqua == toadox[i]) && (yqua == toadoy[i]))
-			return true; // ran de len qua
-	}
+    for (int i = 0; i < sl; i++)
+    {
+        if (xqua == toadox[i] && yqua == toadoy[i])
+        {
+            // rắn đè lên quả
+            return true;
+        }
+    }
+    return false;
 }
+
 bool kt_ran_an_qua(int x0, int y0, int xqua, int yqua)
 {
-	if ((x0 == xqua) && (y0 == yqua))
-		return true; //ran an qua
-
-	return false;
+    if (x0 == xqua && y0 == yqua)
+    {
+        //rắn ăn quả
+        return true;
+    }
+    return false;
 }
